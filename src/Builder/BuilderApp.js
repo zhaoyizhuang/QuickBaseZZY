@@ -1,15 +1,38 @@
 import React, {useState} from "react";
+import {SubmitButton} from "./SubmitButton";
 
+const Order = [
+    {value: "NONE", option: "None", _id: '1'},
+    {value: 'ALPHA', option: 'Display in Alphabetical', _id: '2'},
+    {value: 'LENGTH', option: 'Display in Length', _id: '3'}
+]
+
+const handleSubmit = (e) => {
+    e.preventDefault();
+    console.log("submited");
+}
 const Builder = () => {
+    const [choices, setChoices] = useState([{Choice: "", _id: 'PLACEHOLDER'}]);
+    const [newChoice, setNewChoice] = useState("");
+
+    const addNewChoice = () => {
+        for (const c of choices) {
+            if (c.Choice === newChoice) return;
+        }
+        const randomId = (new Date()).getTime() + "";
+        const choice = {
+            Choice: newChoice, _id: randomId
+        }
+        setChoices([...choices, choice]);
+        setNewChoice('');
+    }
     const alert = () => {
         console.log("alert");
     }
     return(
         <div>
-            <div className="title">
-                Field Builder
-            </div>
-            <form className={'form'}>
+            <div className="title">Field Builder</div>
+            <form className={'form'} onSubmit={handleSubmit}>
                 <div className="form-control">
                     <label htmlFor="label">Label </label>
                     <input type="text"
@@ -28,29 +51,57 @@ const Builder = () => {
                 </div>
                 <div className="form-control">
                     <label htmlFor="default-value">Default Value </label>
-                    <input type="text" id={'default-value'} name={'default-value'}/>
+                    <input type="text"
+                           id={'default-value'}
+                           name={'default-value'}
+                           placeholder={choices[0].Choice}/>
                 </div>
                 <div className="form-control">
-                    <label htmlFor="choices">Order </label>
+                    <label htmlFor="choices">Choices </label>
                     <select id={'choices'} name={'choices'}>
-                        <option value="Australia">Australia</option>
+                        {
+                            choices.map(
+                                choice =>
+                                {
+                                    if (choice._id !== 'PLACEHOLDER') {
+                                        return (
+                                            <option key={choice._id}>{choice.Choice}</option>
+                                               )
+                                    }
+                                }
+
+                            )
+                        }
                     </select>
+                </div>
+                <div className="form-control">
+                    <div/>
+                    <span>
+                        <input type="text"
+                               onChange={(e) =>
+                                   setNewChoice(e.target.value)}
+                               value={newChoice}/>
+                        <span className={'add-new-btn'}
+                              onClick={addNewChoice}>+</span>
+                    </span>
                 </div>
                 <div className="form-control">
                     <label htmlFor="order">Order </label>
                     <select id={'order'} name={'order'}>
-                        <option value="empty"/>
-                        <option value="alpha">Display in Alphabetical</option>
-                        <option value="length">Display in Length</option>
+                        {
+                            Order.map(
+                                order =>
+                                    <option value={order.value}
+                                            key={order._id}>{order.option}</option>
+                            )
+                        }
                     </select>
                 </div>
 
                 <div className="form-control">
                     <div/>
                     <div className={'save'}>
-                        <button className={'btn'} id={'btn'}>
-                            Save changes
-                        </button>
+                        {<SubmitButton type={'submit'} words={'Save changes'}/>}
                         <span> Or <span className={'cancel'}
                                         onClick={() => alert()}> Cancel </span>
                         </span>
