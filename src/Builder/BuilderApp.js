@@ -11,10 +11,22 @@ const Order = [
 const Builder = () => {
     const [choices, setChoices] = useState([{Choice: "", _id: 'PLACEHOLDER'}]);
     const [newChoice, setNewChoice] = useState("");
+    const [defaultValue, setDefaultValue] = useState("");
     const [over50Warning, set50Warning] = useState("hidden")
     const [label, setLabel] = useState("")
     const handleSubmit = (e) => {
         e.preventDefault();
+        var seen = false;
+        for (const c of choices) {
+            if (c.Choice === defaultValue) {
+                seen = true;
+                break;
+            }
+        }
+        if (!seen) {
+            setChoices([...choices, {Choice: defaultValue, _id: "DEFAULT_VALUE"}]);
+            setNewChoice('');
+        }
         if (label === "") {
             alert("Label field is required");
             return;
@@ -52,7 +64,6 @@ const Builder = () => {
 
     /**
      * Remove a choice from Choice list
-     * @param choice the choice to be removed.
      */
     const remove = () => {
         if (newChoice === "") {
@@ -96,7 +107,9 @@ const Builder = () => {
                     <input type="text"
                            id={'default-value'}
                            name={'default-value'}
-                           placeholder={choices[0].Choice}/>
+                           placeholder={choices[0].Choice}
+                           onChange={(e) =>
+                               setDefaultValue(e.target.value)}/>
                 </div>
                 <div className="form-control">
                     <label htmlFor="choices">Choices </label>
@@ -117,12 +130,7 @@ const Builder = () => {
                     </select>
                 </div>
                 <div className="form-control">
-                    <div/>
-                    <span className={'over-max-choice'}
-                          style={{visibility: over50Warning}}>Over Max {MAX_CHOICES} Choices!</span>
-                </div>
-                <div className="form-control">
-                    <div/>
+                    <label>Add/Remove Choices</label>
                     <span>
                         <input type="text"
                                onChange={(e) =>
@@ -133,6 +141,11 @@ const Builder = () => {
                         <span className={'choice-btn'}
                               onClick={remove}>-</span>
                     </span>
+                </div>
+                <div className="form-control">
+                    <div/>
+                    <span className={'over-max-choice'}
+                          style={{visibility: over50Warning}}>Over Max {MAX_CHOICES} Choices!</span>
                 </div>
                 <div className="form-control">
                     <label htmlFor="order">Order </label>
