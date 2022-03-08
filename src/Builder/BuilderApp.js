@@ -1,23 +1,42 @@
 import React, {useState} from "react";
 import {SubmitButton} from "./SubmitButton";
 
+const MAX_CHOICES = 2;
 const Order = [
     {value: "NONE", option: "None", _id: '1'},
     {value: 'ALPHA', option: 'Display in Alphabetical', _id: '2'},
     {value: 'LENGTH', option: 'Display in Length', _id: '3'}
 ]
 
-const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log("submited");
-}
 const Builder = () => {
     const [choices, setChoices] = useState([{Choice: "", _id: 'PLACEHOLDER'}]);
     const [newChoice, setNewChoice] = useState("");
-
+    const [over50Warning, set50Warning] = useState("hidden")
+    const [label, setLabel] = useState("")
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        if (label === "") {
+            alert("Label field is required");
+            return;
+        }
+        console.log("submitted");
+    }
     const addNewChoice = () => {
+        if (newChoice === "") {
+            alert("choice cannot be empty");
+            return;
+        }
         for (const c of choices) {
-            if (c.Choice === newChoice) return;
+            if (c.Choice === newChoice) {
+                alert("duplicate choice");
+                return;
+            }
+        }
+        if (choices.length > MAX_CHOICES) {
+            set50Warning('visible');
+            return;
+        } else {
+            set50Warning('hidden');
         }
         const randomId = (new Date()).getTime() + "";
         const choice = {
@@ -25,9 +44,6 @@ const Builder = () => {
         }
         setChoices([...choices, choice]);
         setNewChoice('');
-    }
-    const alert = () => {
-        console.log("alert");
     }
     return(
         <div>
@@ -38,7 +54,9 @@ const Builder = () => {
                     <input type="text"
                            id={'label'}
                            name={'label'}
-                           placeholder={'Sales Region'}/>
+                           placeholder={'Required Field'}
+                           onChange={(e) =>
+                               setLabel(e.target.value)}/>
                 </div>
                 <div className="form-control">
                     <span>Type</span>
@@ -76,6 +94,11 @@ const Builder = () => {
                 </div>
                 <div className="form-control">
                     <div/>
+                    <span className={'over-max-choice'}
+                          style={{visibility: over50Warning}}>Over Max {MAX_CHOICES} Choices!</span>
+                </div>
+                <div className="form-control">
+                    <div/>
                     <span>
                         <input type="text"
                                onChange={(e) =>
@@ -102,8 +125,7 @@ const Builder = () => {
                     <div/>
                     <div className={'save'}>
                         {<SubmitButton type={'submit'} words={'Save changes'}/>}
-                        <span> Or <span className={'cancel'}
-                                        onClick={() => alert()}> Cancel </span>
+                        <span> Or <span className={'cancel'}> Cancel </span>
                         </span>
                     </div>
                 </div>

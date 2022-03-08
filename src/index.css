@@ -64,7 +64,15 @@ body {
     display: inline-block;
     padding: 0.45rem;
 }
-
+.form .add-new-btn:hover {
+    text-shadow: 0 0 4px var(--btn-color);
+    cursor: pointer;
+}
+.form .over-max-choice {
+    color: red;
+    font-size: 11px;
+    margin: -5rem 0;
+}
 
 #submit-btn {
     display: inline-block;
