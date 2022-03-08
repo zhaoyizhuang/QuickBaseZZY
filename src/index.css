@@ -60,11 +60,11 @@ body {
 .form .cancel {
     color: red;
 }
-.form .add-new-btn {
+.form .choice-btn {
     display: inline-block;
     padding: 0.45rem;
 }
-.form .add-new-btn:hover {
+.form .choice-btn:hover {
     text-shadow: 0 0 4px var(--btn-color);
     cursor: pointer;
 }

@@ -21,6 +21,10 @@ const Builder = () => {
         }
         console.log("submitted");
     }
+
+    /**
+     * Add a new Choice
+     */
     const addNewChoice = () => {
         if (newChoice === "") {
             alert("choice cannot be empty");
@@ -45,6 +49,26 @@ const Builder = () => {
         setChoices([...choices, choice]);
         setNewChoice('');
     }
+
+    /**
+     * Remove a choice from Choice list
+     * @param choice the choice to be removed.
+     */
+    const remove = () => {
+        if (newChoice === "") {
+            alert("choice cannot be empty");
+            return;
+        }
+        const originLength = choices.length;
+        const new_choices = choices.filter(c => c.Choice !== newChoice);
+        if (originLength === new_choices.length) {
+            alert("Choice did not find");
+            return;
+        }
+        alert("Choice " + newChoice +" deleted");
+        setChoices(new_choices);
+    }
+
     return(
         <div>
             <div className="title">Field Builder</div>
@@ -104,8 +128,10 @@ const Builder = () => {
                                onChange={(e) =>
                                    setNewChoice(e.target.value)}
                                value={newChoice}/>
-                        <span className={'add-new-btn'}
+                        <span className={'choice-btn'}
                               onClick={addNewChoice}>+</span>
+                        <span className={'choice-btn'}
+                              onClick={remove}>-</span>
                     </span>
                 </div>
                 <div className="form-control">
