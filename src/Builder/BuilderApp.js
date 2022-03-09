@@ -11,20 +11,41 @@ const Order = [
 const Builder = () => {
     const [choices, setChoices] = useState([{Choice: "", _id: 'PLACEHOLDER'}]);
     const [newChoice, setNewChoice] = useState("");
-    const [defaultValue, setDefaultValue] = useState("");
+    const [defaultvalue, setDefaultValue] = useState("");
     const [over50Warning, set50Warning] = useState("hidden")
+    const [multiSelect, setMultiSelect] = useState(false);
+    const [order, setOrder] = useState(0)
     const [label, setLabel] = useState("")
+
+    const handleClear = () => {
+        setChoices([{Choice: "", _id: 'PLACEHOLDER'}]);
+        setNewChoice("");
+        setDefaultValue("");
+        set50Warning("hidden");
+        setLabel("");
+        if(order === 0) {
+            console.log("0")
+        } else {
+             order.selectedIndex = 0;
+        }
+        setOrder(0);
+        setMultiSelect(false);
+    }
+
+    /**
+     * Submit the form
+     */
     const handleSubmit = (e) => {
         e.preventDefault();
-        var seen = false;
+        let seen = false;
         for (const c of choices) {
-            if (c.Choice === defaultValue) {
+            if (c.Choice === defaultvalue) {
                 seen = true;
                 break;
             }
         }
         if (!seen) {
-            setChoices([...choices, {Choice: defaultValue, _id: "DEFAULT_VALUE"}]);
+            setChoices([...choices, {Choice: defaultvalue, _id: "DEFAULT_VALUE"}]);
             setNewChoice('');
         }
         if (label === "") {
@@ -90,6 +111,7 @@ const Builder = () => {
                            id={'label'}
                            name={'label'}
                            placeholder={'Required Field'}
+                           value={label}
                            onChange={(e) =>
                                setLabel(e.target.value)}/>
                 </div>
@@ -98,7 +120,10 @@ const Builder = () => {
                     <span>Multi-select
                         <input type="checkbox"
                                id={'multi-select'}
-                               name={'multi-select'}/>
+                               name={'multi-select'}
+                               onChange={(e) =>
+                                   setMultiSelect(e.target.checked)}
+                               checked={multiSelect}/>
                         A Value is required
                     </span>
                 </div>
@@ -107,9 +132,9 @@ const Builder = () => {
                     <input type="text"
                            id={'default-value'}
                            name={'default-value'}
-                           placeholder={choices[0].Choice}
                            onChange={(e) =>
-                               setDefaultValue(e.target.value)}/>
+                               setDefaultValue(e.target.value)}
+                           value={defaultvalue}/>
                 </div>
                 <div className="form-control">
                     <label htmlFor="choices">Choices </label>
@@ -149,7 +174,8 @@ const Builder = () => {
                 </div>
                 <div className="form-control">
                     <label htmlFor="order">Order </label>
-                    <select id={'order'} name={'order'}>
+                    <select id={'order'} name={'order'}
+                            onChange={(e) => setOrder(e.target)}>
                         {
                             Order.map(
                                 order =>
@@ -161,7 +187,10 @@ const Builder = () => {
                 </div>
 
                 <div className="form-control">
-                    <div/>
+                    <button className={'clear-btn'} type={'button'}
+                            onClick={() => handleClear()}>
+                        Clear
+                    </button>
                     <div className={'save'}>
                         {<SubmitButton type={'submit'} words={'Save changes'}/>}
                         <span> Or <span className={'cancel'}> Cancel </span>

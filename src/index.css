@@ -65,13 +65,29 @@ body {
     padding: 0.45rem;
 }
 .form .choice-btn:hover {
-    text-shadow: 0 0 4px var(--btn-color);
+    text-shadow: 0 0 4px var(--black);
     cursor: pointer;
 }
 .form .over-max-choice {
     color: red;
     font-size: 11px;
     margin: -5rem 0;
+}
+.form .clear-btn {
+    display: inline-block;
+    background: var(--white);
+    color: var(--black);
+    border-color: var(--black);
+    margin: 1rem 5rem 0 0;
+    letter-spacing: var(--spacing);
+    padding: 0.45rem;
+    text-transform: capitalize;
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: medium;
+}
+.form .clear-btn:hover {
+    box-shadow: 0 0 4px var(--black);
 }
 
 #submit-btn {

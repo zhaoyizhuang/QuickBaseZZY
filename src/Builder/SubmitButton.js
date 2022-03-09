@@ -5,9 +5,11 @@ import React from "react";
  * @param words words on the button
  * @return {JSX.Element} button element
  */
-export const SubmitButton = ({words}) => {
+export const SubmitButton = ({type, words}) => {
     return (
-        <button className={'submit-btn'} id={'submit-btn'}>
+        <button type={type}
+                className={'submit-btn'}
+                id={'submit-btn'}>
             {words}
         </button>
     )
