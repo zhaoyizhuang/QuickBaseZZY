@@ -2,6 +2,7 @@ import React from "react";
 
 /**
  * Submit Button component that can be reused
+ * @param type type of the button
  * @param words words on the button
  * @return {JSX.Element} button element
  */

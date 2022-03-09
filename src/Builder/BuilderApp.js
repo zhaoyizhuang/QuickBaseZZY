@@ -1,8 +1,9 @@
 import React, {useState} from "react";
 import {SubmitButton} from "./SubmitButton";
-import {createForm} from "./BuilderService";
+import {createForm} from "../service/BuilderService";
 
-const MAX_CHOICES = 2;
+const MAX_CHOICES = 50; //Max Number of Choices
+//All Possible Orders
 const Order = [
     {value: "NONE", option: "None", _id: '1'},
     {value: 'ALPHA', option: 'Display in Alphabetical', _id: '2'},
@@ -18,6 +19,9 @@ const Builder = () => {
     const [order, setOrder] = useState(0)
     const [label, setLabel] = useState("")
 
+    /**
+     * Clear/Reset all states
+     */
     const handleClear = () => {
         setChoices([{Choice: "", _id: 'PLACEHOLDER'}]);
         setNewChoice("");
@@ -32,7 +36,7 @@ const Builder = () => {
     }
 
     /**
-     * Submit the form
+     * Submit the form and post it to the API
      */
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -112,6 +116,7 @@ const Builder = () => {
         }
         alert("Choice " + newChoice +" deleted");
         setChoices(new_choices);
+        setNewChoice('');
     }
 
     return(
