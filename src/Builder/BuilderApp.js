@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {SubmitButton} from "./SubmitButton";
+import {createForm} from "./BuilderService";
 
 const MAX_CHOICES = 2;
 const Order = [
@@ -23,19 +24,17 @@ const Builder = () => {
         setDefaultValue("");
         set50Warning("hidden");
         setLabel("");
-        if(order === 0) {
-            console.log("0")
-        } else {
-             order.selectedIndex = 0;
+        if(order !== 0) {
+            order.selectedIndex = 0;
+            setOrder(0);
         }
-        setOrder(0);
         setMultiSelect(false);
     }
 
     /**
      * Submit the form
      */
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
         let seen = false;
         for (const c of choices) {
@@ -52,7 +51,21 @@ const Builder = () => {
             alert("Label field is required");
             return;
         }
-        console.log("submitted");
+
+        let choiceOrder = (order === 0) ? "NONE" : order.options[1].value;
+        let form = {
+            Label: label,
+            multiSelect: multiSelect,
+            defaultValue: defaultvalue,
+            choices: choices,
+            order: choiceOrder
+        }
+
+        form = JSON.stringify(form);
+        const response = await createForm(form);
+        console.log(response);
+        console.log(form);
+
     }
 
     /**
