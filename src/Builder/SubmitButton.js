@@ -6,11 +6,12 @@ import React from "react";
  * @param words words on the button
  * @return {JSX.Element} button element
  */
-export const SubmitButton = ({type, words}) => {
+export const SubmitButton = ({type, words, event}) => {
     return (
         <button type={type}
                 className={'submit-btn'}
-                id={'submit-btn'}>
+                id={'submit-btn'}
+                onClick={() => event()}>
             {words}
         </button>
     )

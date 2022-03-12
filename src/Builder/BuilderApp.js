@@ -12,7 +12,7 @@ const Order = [
 ]
 
 const Builder = () => {
-    const [choices, setChoices] = useState([{Choice: "", _id: 'PLACEHOLDER'}]);
+    const [choices, setChoices] = useState([]);
     const [newChoice, setNewChoice] = useState("");
     const [defaultvalue, setDefaultValue] = useState("");
     const [over50Warning, set50Warning] = useState("hidden")
@@ -24,7 +24,7 @@ const Builder = () => {
      * Clear/Reset all states
      */
     const handleClear = () => {
-        setChoices([{Choice: "", _id: 'PLACEHOLDER'}]);
+        setChoices([]);
         setNewChoice("");
         setDefaultValue("");
         set50Warning("hidden");
@@ -40,7 +40,12 @@ const Builder = () => {
      * Submit the form and post it to the API
      */
     const handleSubmit = async (e) => {
-        e.preventDefault();
+        // e.preventDefault();
+        if (label === "") {
+            alert("Label field is required");
+            return;
+        }
+
         let seen = false;
         for (const c of choices) {
             if (c.Choice === defaultvalue) {
@@ -48,13 +53,18 @@ const Builder = () => {
                 break;
             }
         }
-        if (!seen) {
-            setChoices([...choices, {Choice: defaultvalue, _id: "DEFAULT_VALUE"}]);
-            setNewChoice('');
-        }
-        if (label === "") {
-            alert("Label field is required");
-            return;
+
+        let realChoices = choices; //represent the choices with possible unseen default value
+        if (!seen && defaultvalue !== "") {
+            const choice = {
+                Choice: defaultvalue, _id: "DEFAULT_VALUE"
+            }
+            realChoices = [...realChoices, choice];
+            setChoices(realChoices);
+            // State updates in React are not applied immediately. Instead,
+            // they are placed in a queue and scheduled. In fact,
+            // React does not apply the new values to the state until the component is reconciled.
+            // Thus, I need realChoices instead of choices to be in the JSON request.
         }
 
         let choiceOrder = (order === 0) ? "NONE" : order.options[order.selectedIndex].value;
@@ -62,7 +72,7 @@ const Builder = () => {
             Label: label,
             multiSelect: multiSelect,
             defaultValue: defaultvalue,
-            choices: choices,
+            choices: realChoices,
             order: choiceOrder
         }
 
@@ -70,7 +80,6 @@ const Builder = () => {
         const response = await createForm(form);
         console.log(response);
         console.log(form);
-
     }
 
     /**
@@ -125,21 +134,18 @@ const Builder = () => {
             <div className="title">Field Builder</div>
             <form className={'form'} onSubmit={handleSubmit}>
                 <div className="form-control">
-                    <label htmlFor="label">Label </label>
+                    <label>Label </label>
                     <input type="text"
-                           id={'label'}
-                           name={'label'}
                            placeholder={'Required Field'}
                            value={label}
                            onChange={(e) =>
                                setLabel(e.target.value)}/>
                 </div>
                 <div className="form-control">
-                    <span>Type</span>
+                    <label>Type </label>
                     <span>Multi-select
                         <input type="checkbox"
-                               id={'multi-select'}
-                               name={'multi-select'}
+                               className={'check-box'}
                                onChange={(e) =>
                                    setMultiSelect(e.target.checked)}
                                checked={multiSelect}/>
@@ -147,29 +153,19 @@ const Builder = () => {
                     </span>
                 </div>
                 <div className="form-control">
-                    <label htmlFor="default-value">Default Value </label>
+                    <label>Default Value </label>
                     <input type="text"
-                           id={'default-value'}
-                           name={'default-value'}
+                           value={defaultvalue}
                            onChange={(e) =>
-                               setDefaultValue(e.target.value)}
-                           value={defaultvalue}/>
+                               setDefaultValue(e.target.value)}/>
                 </div>
                 <div className="form-control">
-                    <label htmlFor="choices">Choices </label>
-                    <select id={'choices'} name={'choices'}>
+                    <label>Choices </label>
+                    <select>
                         {
-                            choices.map(
-                                choice =>
-                                {
-                                    if (choice._id !== 'PLACEHOLDER') {
-                                        return (
-                                            <option key={choice._id}>{choice.Choice}</option>
-                                               )
-                                    }
-                                }
-
-                            )
+                            choices.map( choice => {
+                                return (<option key={choice._id}>{choice.Choice}</option>)
+                            })
                         }
                     </select>
                 </div>
@@ -192,8 +188,8 @@ const Builder = () => {
                           style={{visibility: over50Warning}}>Over Max {MAX_CHOICES} Choices!</span>
                 </div>
                 <div className="form-control">
-                    <label htmlFor="order">Order </label>
-                    <select id={'order'} name={'order'}
+                    <label>Order </label>
+                    <select
                             onChange={(e) => setOrder(e.target)}>
                         {
                             Order.map(
@@ -211,7 +207,9 @@ const Builder = () => {
                         Clear
                     </button>
                     <div className={'save'}>
-                        {<SubmitButton type={'submit'} words={'Save changes'}/>}
+                        {<SubmitButton type={'button'}
+                                       words={'Save changes'}
+                                       event={handleSubmit}/>}
                         <span> Or <span className={'cancel'}> Cancel </span>
                         </span>
                     </div>

@@ -24,7 +24,7 @@ maybe because React do auto integration of all css
     grid-template-columns: 200px 1fr;
     align-items: center;
 }
-.form #multi-select{
+.form .check-box{
     margin: 0 10px 4px 10px;
     vertical-align: middle;
 }
