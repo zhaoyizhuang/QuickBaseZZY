@@ -2,6 +2,7 @@ import React, {useState} from "react";
 import {SubmitButton} from "./SubmitButton";
 import {createForm} from "../service/BuilderService";
 import './BuilderApp.css'
+import {randomID} from "../RandomGenerator/RandomID";
 
 const MAX_CHOICES = 50; //Max Number of Choices
 //All Possible Orders
@@ -57,7 +58,7 @@ const Builder = () => {
         let realChoices = choices; //represent the choices with possible unseen default value
         if (!seen && defaultvalue !== "") {
             const choice = {
-                Choice: defaultvalue, _id: "DEFAULT_VALUE"
+                Choice: defaultvalue, _id: randomID()
             }
             realChoices = [...realChoices, choice];
             setChoices(realChoices);
@@ -102,9 +103,8 @@ const Builder = () => {
         } else {
             set50Warning('hidden');
         }
-        const randomId = (new Date()).getTime() + "";
         const choice = {
-            Choice: newChoice, _id: randomId
+            Choice: newChoice, _id: randomID()
         }
         setChoices([...choices, choice]);
         setNewChoice('');
