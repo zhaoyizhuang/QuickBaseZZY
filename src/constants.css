@@ -1,0 +1,14 @@
+:root {
+    /*
+    Global Variables
+    */
+    --font-color: hsl(209, 61%, 16%);
+    --background-color: hsl(210, 36%, 96%);
+    --white: #fff;
+    --black: #222;
+    --btn-color: #64bb64;
+    --title-color: #066f8b;
+    --spacing: 0.1rem;
+    --radius: 0.3rem;
+    --fixed-width: 550px;
+}

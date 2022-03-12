@@ -1,6 +1,7 @@
 import React, {useState} from "react";
 import {SubmitButton} from "./SubmitButton";
 import {createForm} from "../service/BuilderService";
+import './BuilderApp.css'
 
 const MAX_CHOICES = 50; //Max Number of Choices
 //All Possible Orders
@@ -56,7 +57,7 @@ const Builder = () => {
             return;
         }
 
-        let choiceOrder = (order === 0) ? "NONE" : order.options[1].value;
+        let choiceOrder = (order === 0) ? "NONE" : order.options[order.selectedIndex].value;
         let form = {
             Label: label,
             multiSelect: multiSelect,

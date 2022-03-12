@@ -1,22 +1,16 @@
-:root {
-    --font-color: hsl(209, 61%, 16%);
-    --background-color: hsl(210, 36%, 96%);
-    --white: #fff;
-    --black: #222;
-    --btn-color: #64bb64;
-    --title-color: #066f8b;
-    --spacing: 0.1rem;
-    --radius: 0.25rem;
-    --fixed-width: 550px;
-}
+@import "constants.css";
 
 *,
 ::after,
 ::before {
+    /*
+    Reset, ensure the consistency of UI delivery in different browsers.
+    */
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
+
 body {
     font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen,
     Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -26,92 +20,11 @@ body {
     font-size: 1.1rem;
 }
 
-.form {
-    background: var(--white);
-    max-width: var(--fixed-width);
-    margin: 0 auto 4rem;
-    padding: 1rem 2rem;
-    border-radius: var(--radius);
+html, body{
+    /*
+    To avoid 'Uncaught TypeError: Cannot read properties of null'
+    */
+    height: 100%;
 }
-.form input {
-    background: var(--background-color);
-    border-color: transparent;
-    border-radius: var(--radius);
-    padding: 0.25rem 0.5rem;
-    font-size: medium;
-}
-.form-control {
-    margin: 0.5rem 0;
-    display: grid;
-    grid-template-columns: 200px 1fr;
-    align-items: center;
-}
-.form #multi-select{
-    margin: 0 10px 4px 10px;
-    vertical-align: middle;
-}
-.form select{
-    background-color: var(--background-color);
-    font-size: medium;
-}
-.form .cancel:hover{
-    cursor: pointer;
-}
-.form .cancel {
-    color: red;
-}
-.form .choice-btn {
-    display: inline-block;
-    padding: 0.45rem;
-}
-.form .choice-btn:hover {
-    text-shadow: 0 0 4px var(--black);
-    cursor: pointer;
-}
-.form .over-max-choice {
-    color: red;
-    font-size: 11px;
-    margin: -5rem 0;
-}
-.form .clear-btn {
-    display: inline-block;
-    background: var(--white);
-    color: var(--black);
-    border-color: var(--black);
-    margin: 1rem 5rem 0 0;
-    letter-spacing: var(--spacing);
-    padding: 0.45rem;
-    text-transform: capitalize;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: medium;
-}
-.form .clear-btn:hover {
-    box-shadow: 0 0 4px var(--black);
-}
-
-#submit-btn {
-    display: inline-block;
-    background: var(--btn-color);
-    color: var(--white);
-    border-color: transparent;
-    margin-top: 1rem;
-    letter-spacing: var(--spacing);
-    padding: 0.45rem;
-    text-transform: capitalize;
-    border-radius: var(--radius);
-    cursor: pointer;
-    font-size: medium;
-}
-#submit-btn:hover {
-    box-shadow: 0 0 4px var(--btn-color);
-}
-
-.title {
-    color: var(--title-color);
-    font-size: larger;
-    text-align: center;
-}
-
 
 
