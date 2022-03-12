@@ -4,7 +4,7 @@ import {createForm} from "../service/BuilderService";
 import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
 
-const MAX_CHOICES = 50; //Max Number of Choices
+const MAX_CHOICES = 2; //Max Number of Choices
 //All Possible Orders
 const Order = [
     {value: "NONE", option: "None", _id: '1'},
@@ -16,10 +16,10 @@ const Builder = () => {
     const [choices, setChoices] = useState([]);
     const [newChoice, setNewChoice] = useState("");
     const [defaultvalue, setDefaultValue] = useState("");
-    const [over50Warning, set50Warning] = useState("hidden")
+    const [over50Warning, set50Warning] = useState("hidden");
     const [multiSelect, setMultiSelect] = useState(false);
-    const [order, setOrder] = useState(0)
-    const [label, setLabel] = useState("")
+    const [order, setOrder] = useState(null); //Order Change Event
+    const [label, setLabel] = useState("");
 
     /**
      * Clear/Reset all states
@@ -30,9 +30,10 @@ const Builder = () => {
         setDefaultValue("");
         set50Warning("hidden");
         setLabel("");
-        if(order !== 0) {
+        if(order !== null) {
+            // Mock the change to set the order to none
             order.selectedIndex = 0;
-            setOrder(0);
+            setOrder(null);
         }
         setMultiSelect(false);
     }
@@ -47,7 +48,7 @@ const Builder = () => {
             return;
         }
 
-        let seen = false;
+        let seen = false; //represent if default value is in choices.
         for (const c of choices) {
             if (c.Choice === defaultvalue) {
                 seen = true;
@@ -61,6 +62,10 @@ const Builder = () => {
                 Choice: defaultvalue, _id: randomID()
             }
             realChoices = [...realChoices, choice];
+            if (realChoices.length > MAX_CHOICES) {
+                alert("default value not in choices");
+                return;
+            }
             setChoices(realChoices);
             // State updates in React are not applied immediately. Instead,
             // they are placed in a queue and scheduled. In fact,
@@ -68,7 +73,9 @@ const Builder = () => {
             // Thus, I need realChoices instead of choices to be in the JSON request.
         }
 
-        let choiceOrder = (order === 0) ? "NONE" : order.options[order.selectedIndex].value;
+        //If did not select order, return the NONE
+        let choiceOrder = (order === null) ? Order[0].value
+                                           : order.options[order.selectedIndex].value;
         let form = {
             Label: label,
             multiSelect: multiSelect,
@@ -97,7 +104,7 @@ const Builder = () => {
                 return;
             }
         }
-        if (choices.length > MAX_CHOICES) {
+        if (choices.length >= MAX_CHOICES) {
             set50Warning('visible');
             return;
         } else {
@@ -125,6 +132,9 @@ const Builder = () => {
             return;
         }
         alert("Choice " + newChoice +" deleted");
+        if (choices.length <= MAX_CHOICES) {
+            set50Warning("hidden");
+        }
         setChoices(new_choices);
         setNewChoice('');
     }
