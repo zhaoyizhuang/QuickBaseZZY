@@ -4,7 +4,7 @@ import {createForm} from "../service/BuilderService";
 import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
 
-const MAX_CHOICES = 2; //Max Number of Choices
+const MAX_CHOICES = 50; //Max Number of Choices
 //All Possible Orders
 const Order = [
     {value: "NONE", option: "None", _id: '1'},
@@ -63,6 +63,7 @@ const Builder = () => {
             }
             realChoices = [...realChoices, choice];
             if (realChoices.length > MAX_CHOICES) {
+                // If choices are more than max value
                 alert("default value not in choices");
                 return;
             }
