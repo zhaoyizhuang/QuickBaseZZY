@@ -34,10 +34,15 @@ const Builder = () => {
         = useState(savedOrder === null? 0 : savedOrder);
     const [label, setLabel]
         = useState(savedLabel === null? "" : savedLabel);
+    const [submitted, setSubmitted] = useState(false);
 
 
     window.onbeforeunload = function()
     {
+        if (submitted) {
+            setSubmitted(false);
+            return;
+        }
         storage.setItem('choices', JSON.stringify(choices));
         storage.setItem('newChoice', newChoice);
         storage.setItem('defaultValue', defaultvalue);
@@ -106,7 +111,9 @@ const Builder = () => {
 
         form = JSON.stringify(form);
         const response = await createForm(form);
-        storage.clear();
+        window.localStorage.clear();
+        //handleClear(); enable it if want to reload all field when submit.
+        setSubmitted(true);
         console.log(response);
         console.log(form);
     }
