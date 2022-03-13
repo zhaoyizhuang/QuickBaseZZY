@@ -22,7 +22,8 @@ const Builder = () => {
     const savedOrder = JSON.parse(storage.getItem('order'));
 
     const [choices, setChoices]
-        = useState(savedChoices === null? [] : savedChoices);
+        = useState(savedChoices === null? [] : savedChoices); // Using [] instead of set
+    // because choice is object instead of string
     const [newChoice, setNewChoice]
         = useState(savedNewChoice === null? "" : savedNewChoice);
     const [defaultvalue, setDefaultValue]
@@ -34,12 +35,13 @@ const Builder = () => {
         = useState(savedOrder === null? 0 : savedOrder);
     const [label, setLabel]
         = useState(savedLabel === null? "" : savedLabel);
-    const [submitted, setSubmitted] = useState(false);
+    const [submitted, setSubmitted] = useState(false); // If the form is submitted
 
 
     window.onbeforeunload = function()
     {
         if (submitted) {
+            // do not store data into local storage
             setSubmitted(false);
             return;
         }
@@ -112,7 +114,7 @@ const Builder = () => {
         form = JSON.stringify(form);
         const response = await createForm(form);
         window.localStorage.clear();
-        //handleClear(); enable it if want to reload all field when submit.
+        //handleClear(); enable it if want to clear all field when submit.
         setSubmitted(true);
         console.log(response);
         console.log(form);
@@ -142,6 +144,9 @@ const Builder = () => {
             Choice: newChoice, _id: randomID()
         }
         setChoices([...choices, choice]);
+        // Not choices.push() because setState()
+        // afterwards may replace the mutation. Also, mutate state directly is never a good idea
+        // since it may cause some abnormal, break React's idea and slow down the project.
         setNewChoice('');
     }
 
@@ -154,7 +159,7 @@ const Builder = () => {
             return;
         }
         const originLength = choices.length;
-        const new_choices = choices.filter(c => c.Choice !== newChoice);
+        const new_choices = choices.filter(c => c.Choice !== newChoice); //filter does not mutate
         if (originLength === new_choices.length) {
             alert("Choice did not find");
             return;
