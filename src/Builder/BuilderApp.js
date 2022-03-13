@@ -13,13 +13,38 @@ const Order = [
 ]
 
 const Builder = () => {
-    const [choices, setChoices] = useState([]);
-    const [newChoice, setNewChoice] = useState("");
-    const [defaultvalue, setDefaultValue] = useState("");
+    const storage = window.localStorage;
+    const savedChoices = JSON.parse(storage.getItem('choices'));
+    const savedNewChoice = storage.getItem('newChoice');
+    const savedDefault = storage.getItem('defaultValue');
+    const savedMulti = JSON.parse(storage.getItem('multiSelect'));
+    const savedLabel = storage.getItem('label');
+    const savedOrder = JSON.parse(storage.getItem('order'));
+
+    const [choices, setChoices]
+        = useState(savedChoices === null? [] : savedChoices);
+    const [newChoice, setNewChoice]
+        = useState(savedNewChoice === null? "" : savedNewChoice);
+    const [defaultvalue, setDefaultValue]
+        = useState(savedDefault === null? "" : savedDefault);
     const [over50Warning, set50Warning] = useState("hidden");
-    const [multiSelect, setMultiSelect] = useState(false);
-    const [order, setOrder] = useState(null); //Order Change Event
-    const [label, setLabel] = useState("");
+    const [multiSelect, setMultiSelect]
+        = useState(savedMulti === null? false : savedMulti);
+    const [order, setOrder]
+        = useState(savedOrder === null? 0 : savedOrder);
+    const [label, setLabel]
+        = useState(savedLabel === null? "" : savedLabel);
+
+
+    window.onbeforeunload = function()
+    {
+        storage.setItem('choices', JSON.stringify(choices));
+        storage.setItem('newChoice', newChoice);
+        storage.setItem('defaultValue', defaultvalue);
+        storage.setItem('multiSelect', JSON.stringify(multiSelect));
+        storage.setItem('label', label);
+        storage.setItem('order',JSON.stringify(order));
+    };
 
     /**
      * Clear/Reset all states
@@ -30,11 +55,7 @@ const Builder = () => {
         setDefaultValue("");
         set50Warning("hidden");
         setLabel("");
-        if(order !== null) {
-            // Mock the change to set the order to none
-            order.selectedIndex = 0;
-            setOrder(null);
-        }
+        setOrder(0);
         setMultiSelect(false);
     }
 
@@ -74,19 +95,18 @@ const Builder = () => {
             // Thus, I need realChoices instead of choices to be in the JSON request.
         }
 
-        //If did not select order, return the NONE
-        let choiceOrder = (order === null) ? Order[0].value
-                                           : order.options[order.selectedIndex].value;
+
         let form = {
             Label: label,
             multiSelect: multiSelect,
             defaultValue: defaultvalue,
             choices: realChoices,
-            order: choiceOrder
+            order: Order[order].value
         }
 
         form = JSON.stringify(form);
         const response = await createForm(form);
+        storage.clear();
         console.log(response);
         console.log(form);
     }
@@ -200,13 +220,12 @@ const Builder = () => {
                 </div>
                 <div className="form-control">
                     <label>Order </label>
-                    <select
-                            onChange={(e) => setOrder(e.target)}>
+                    <select onChange={(e) => setOrder(e.target.selectedIndex)}
+                            value={Order[order].value}>
                         {
                             Order.map(
-                                order =>
-                                    <option value={order.value}
-                                            key={order._id}>{order.option}</option>
+                                o => <option value={o.value}
+                                             key={o._id}>{o.option}</option>
                             )
                         }
                     </select>
