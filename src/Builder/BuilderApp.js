@@ -1,5 +1,5 @@
 import React, {useState} from "react";
-import {SubmitButton} from "./SubmitButton";
+import {SubmitButton} from "../Button/SubmitButton";
 import {createForm} from "../service/BuilderService";
 import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
@@ -36,7 +36,7 @@ const Builder = () => {
     const [label, setLabel]
         = useState(savedLabel === null? "" : savedLabel);
     const [submitted, setSubmitted] = useState(false); // If the form is submitted
-
+    const [load, setLoad] = useState(false);
 
     window.onbeforeunload = function()
     {
@@ -102,7 +102,7 @@ const Builder = () => {
             // Thus, I need realChoices instead of choices to be in the JSON request.
         }
 
-
+        setLoad(true);
         let form = {
             Label: label,
             multiSelect: multiSelect,
@@ -112,12 +112,13 @@ const Builder = () => {
         }
 
         form = JSON.stringify(form);
-        const response = await createForm(form);
+        const response = await createForm(form).catch(() => alert("something went wrong"));
         window.localStorage.clear();
-        //handleClear(); enable it if want to clear all field when submit.
         setSubmitted(true);
         console.log(response);
         console.log(form);
+        // window.location.reload(); enable to reload the page
+        setTimeout(() => {setLoad(false)}, 150); //set timeout to see the animation
     }
 
     /**
@@ -251,7 +252,8 @@ const Builder = () => {
                     <div className={'save'}>
                         {<SubmitButton type={'button'}
                                        words={'Save changes'}
-                                       event={handleSubmit}/>}
+                                       event={handleSubmit}
+                                       state={load}/>}
                         <span> Or <span className={'cancel'}> Cancel </span>
                         </span>
                     </div>
