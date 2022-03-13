@@ -1,3 +1,5 @@
+@import "../constants.css";
+
 #submit-btn {
     display: inline-block;
     background: var(--btn-color);

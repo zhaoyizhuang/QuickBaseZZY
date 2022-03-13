@@ -5,6 +5,7 @@ import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
 
 const MAX_CHOICES = 50; //Max Number of Choices
+const MAX_CHOICE_LENGTH = 40; //Max Length of a Choice
 //All Possible Orders
 const Order = [
     {value: "NONE", option: "None", _id: '1'},
@@ -36,7 +37,7 @@ const Builder = () => {
     const [label, setLabel]
         = useState(savedLabel === null? "" : savedLabel);
     const [submitted, setSubmitted] = useState(false); // If the form is submitted
-    const [load, setLoad] = useState(false);
+    const [load, setLoad] = useState(false); // status for loading bar
 
     window.onbeforeunload = function()
     {
@@ -92,7 +93,7 @@ const Builder = () => {
             realChoices = [...realChoices, choice];
             if (realChoices.length > MAX_CHOICES) {
                 // If choices are more than max value
-                alert("default value not in choices");
+                alert("default value not found in choices");
                 return;
             }
             setChoices(realChoices);

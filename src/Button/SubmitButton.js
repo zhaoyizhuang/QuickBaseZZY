@@ -6,7 +6,7 @@ import './Button.css'
  * @param type type of the button
  * @param words words on the button
  * @param event OnclickEventHandler
- * @param state Loading status
+ * @param state Loading status, true to show loading bar and false to show button
  * @return {JSX.Element} button element
  */
 export const SubmitButton = ({type, words, event, state}) => {
