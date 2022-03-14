@@ -4,7 +4,6 @@ import {createForm} from "../service/BuilderService";
 import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
 import ChoiceInput from "./ChoiceInput";
-import ContentState, {Editor, EditorState, Modifier, RichUtils} from 'draft-js';
 import Draft from "draft-js";
 
 const MAX_CHOICES = 50; //Max Number of Choices
@@ -269,7 +268,8 @@ const Builder = () => {
                                        words={'Save changes'}
                                        event={handleSubmit}
                                        state={load}/>}
-                        <span> Or <span className={'cancel'}> Cancel </span>
+                        <span> Or <span className={'cancel'}
+                                        onClick={() => handleClear()}> Cancel </span>
                         </span>
                     </div>
                 </div>
