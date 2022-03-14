@@ -11,7 +11,7 @@ maybe because React do auto integration of all css
     padding: 1rem 2rem;
     border-radius: var(--radius);
 }
-.form input {
+.form input, .DraftEditor-root{
     background: var(--background-color);
     border-color: transparent;
     border-radius: var(--radius);
@@ -31,6 +31,7 @@ maybe because React do auto integration of all css
 .form select{
     background-color: var(--background-color);
     font-size: medium;
+    max-width: 250px;
 }
 .form .cancel:hover{
     cursor: pointer;
@@ -74,3 +75,7 @@ maybe because React do auto integration of all css
     text-align: center;
 }
 
+.DraftEditor-root {
+    width: 182px;
+    display: inline-block;
+}

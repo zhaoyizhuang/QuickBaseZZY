@@ -3,6 +3,9 @@ import {SubmitButton} from "../Button/SubmitButton";
 import {createForm} from "../service/BuilderService";
 import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
+import ChoiceInput from "./ChoiceInput";
+import ContentState, {Editor, EditorState, Modifier, RichUtils} from 'draft-js';
+import Draft from "draft-js";
 
 const MAX_CHOICES = 50; //Max Number of Choices
 const MAX_CHOICE_LENGTH = 40; //Max Length of a Choice
@@ -14,6 +17,8 @@ const Order = [
 ]
 
 const Builder = () => {
+    const EditorState = Draft.EditorState;
+    const ContentState = Draft.ContentState;
     const storage = window.localStorage;
     const savedChoices = JSON.parse(storage.getItem('choices'));
     const savedNewChoice = storage.getItem('newChoice');
@@ -36,16 +41,19 @@ const Builder = () => {
         = useState(savedOrder === null? 0 : savedOrder);
     const [label, setLabel]
         = useState(savedLabel === null? "" : savedLabel);
+    const [editor, setEditor]
+        // = useState(EditorState.createEmpty());
+        = useState(EditorState.createWithContent(ContentState.createFromText(newChoice)));
     const [submitted, setSubmitted] = useState(false); // If the form is submitted
     const [load, setLoad] = useState(false); // status for loading bar
 
     window.onbeforeunload = function()
     {
-        if (submitted) {
-            // do not store data into local storage
-            setSubmitted(false);
-            return;
-        }
+        // if (submitted) {
+        //     // do not store data into local storage
+        //     setSubmitted(false);
+        //     return;
+        // }
         storage.setItem('choices', JSON.stringify(choices));
         storage.setItem('newChoice', newChoice);
         storage.setItem('defaultValue', defaultvalue);
@@ -65,6 +73,7 @@ const Builder = () => {
         setLabel("");
         setOrder(0);
         setMultiSelect(false);
+        setEditor(EditorState.push(editor, ContentState.createFromText('')));
     }
 
     /**
@@ -93,7 +102,7 @@ const Builder = () => {
             realChoices = [...realChoices, choice];
             if (realChoices.length > MAX_CHOICES) {
                 // If choices are more than max value
-                alert("default value not found in choices");
+                alert("over " + MAX_CHOICES +" max choices");
                 return;
             }
             setChoices(realChoices);
@@ -150,6 +159,7 @@ const Builder = () => {
         // afterwards may replace the mutation. Also, mutate state directly is never a good idea
         // since it may cause some abnormal, break React's idea and slow down the project.
         setNewChoice('');
+        setEditor(EditorState.push(editor, ContentState.createFromText('')));
     }
 
     /**
@@ -172,6 +182,7 @@ const Builder = () => {
         }
         setChoices(new_choices);
         setNewChoice('');
+        setEditor(EditorState.push(editor, ContentState.createFromText('')));
     }
 
     return(
@@ -217,10 +228,13 @@ const Builder = () => {
                 <div className="form-control">
                     <label>Add/Remove Choices</label>
                     <span>
-                        <input type="text"
-                               onChange={(e) =>
-                                   setNewChoice(e.target.value)}
-                               value={newChoice}/>
+                        {/*<input type="text"*/}
+                        {/*       onChange={(e) =>*/}
+                        {/*           setNewChoice(e.target.value)}*/}
+                        {/*       value={newChoice}/>*/}
+                        <ChoiceInput newChoice={newChoice}
+                                     setNewChoice={setNewChoice}
+                                     MaxLength={MAX_CHOICE_LENGTH} editor={editor} setEditor={setEditor}/>
                         <span className={'choice-btn'}
                               onClick={addNewChoice}>+</span>
                         <span className={'choice-btn'}
