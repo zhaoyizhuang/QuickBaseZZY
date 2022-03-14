@@ -12,6 +12,7 @@ export const ChoiceInput = ({newChoice, setNewChoice, MaxLength, editor, setEdit
         //Make sure that select all wound not change the color.
         if (!selection.isCollapsed()) return;
 
+        // Allow one color at a time. Turn off all active colors.
         const nextContentState = Object.keys(colorStyleMap)
             .reduce((contentState, color) => {
                 return Modifier.removeInlineStyle(contentState, selection, color)

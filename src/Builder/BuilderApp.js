@@ -5,6 +5,7 @@ import './BuilderApp.css'
 import {randomID} from "../RandomGenerator/RandomID";
 import ChoiceInput from "./ChoiceInput";
 import Draft from "draft-js";
+import axios from "axios";
 
 const MAX_CHOICES = 50; //Max Number of Choices
 const MAX_CHOICE_LENGTH = 40; //Max Length of a Choice
@@ -16,6 +17,7 @@ const Order = [
 ]
 
 const Builder = () => {
+    const controller = new AbortController();
     const EditorState = Draft.EditorState;
     const ContentState = Draft.ContentState;
     const storage = window.localStorage;
@@ -28,7 +30,7 @@ const Builder = () => {
 
     const [choices, setChoices]
         = useState(savedChoices === null? [] : savedChoices); // Using [] instead of set
-    // because choice is object instead of string
+    // because choice is object instead of string adn set does not work well for reference type
     const [newChoice, setNewChoice]
         = useState(savedNewChoice === null? "" : savedNewChoice);
     const [defaultvalue, setDefaultValue]
@@ -36,7 +38,7 @@ const Builder = () => {
     const [over50Warning, set50Warning] = useState("hidden");
     const [multiSelect, setMultiSelect]
         = useState(savedMulti === null? false : savedMulti);
-    const [order, setOrder]
+    const [order, setOrder] //selectedIndex for Order
         = useState(savedOrder === null? 0 : savedOrder);
     const [label, setLabel]
         = useState(savedLabel === null? "" : savedLabel);
@@ -72,7 +74,7 @@ const Builder = () => {
         setLabel("");
         setOrder(0);
         setMultiSelect(false);
-        setEditor(EditorState.push(editor, ContentState.createFromText('')));
+        setEditor(EditorState.push(editor, ContentState.createFromText(''), 'remove-range'));
     }
 
     /**
@@ -111,7 +113,7 @@ const Builder = () => {
             // Thus, I need realChoices instead of choices to be in the JSON request.
         }
 
-        setLoad(true);
+        setLoad(true); //Loading animation
         let form = {
             Label: label,
             multiSelect: multiSelect,
@@ -121,13 +123,18 @@ const Builder = () => {
         }
 
         form = JSON.stringify(form);
-        const response = await createForm(form).catch(() => alert("something went wrong"));
+        const response = await createForm(form, controller);
         window.localStorage.clear();
         setSubmitted(true);
         console.log(response);
         console.log(form);
         // window.location.reload(); enable to reload the page
-        setTimeout(() => {setLoad(false)}, 150); //set timeout to see the animation
+        setTimeout(() => {setLoad(false)}, 1000); //set timeout to see the animation
+    }
+
+    const cancelRequest = () => {
+        controller.abort();
+        setLoad(false);
     }
 
     /**
@@ -158,7 +165,7 @@ const Builder = () => {
         // afterwards may replace the mutation. Also, mutate state directly is never a good idea
         // since it may cause some abnormal, break React's idea and slow down the project.
         setNewChoice('');
-        setEditor(EditorState.push(editor, ContentState.createFromText('')));
+        setEditor(EditorState.push(editor, ContentState.createFromText(''), 'remove-range'));
     }
 
     /**
@@ -181,7 +188,7 @@ const Builder = () => {
         }
         setChoices(new_choices);
         setNewChoice('');
-        setEditor(EditorState.push(editor, ContentState.createFromText('')));
+        setEditor(EditorState.push(editor, ContentState.createFromText(''), 'remove-range'));
     }
 
     return(
@@ -269,7 +276,7 @@ const Builder = () => {
                                        event={handleSubmit}
                                        state={load}/>}
                         <span> Or <span className={'cancel'}
-                                        onClick={() => handleClear()}> Cancel </span>
+                                        onClick={() => cancelRequest()}> Cancel </span>
                         </span>
                     </div>
                 </div>
